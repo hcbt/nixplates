@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  template-checks:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: cachix/install-nix-action@v31
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+
+      - name: Install devenv.sh
+        run: nix profile install nixpkgs#devenv
+
+      - name: Validate root flake outputs
+        run: nix flake check
+
+      - name: Initialize and validate python template
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          project_dir="$(mktemp -d)"
+          cd "$project_dir"
+
+          nix flake init -t "path:${GITHUB_WORKSPACE}#python"
+
+          nix develop --impure --command uv sync --frozen
+          nix develop --impure --command uv run python -m pytest
+          nix develop --impure --command uv run python main.py
