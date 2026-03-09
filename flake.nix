@@ -1,24 +1,27 @@
 {
   description = "nixplates template catalog";
 
-  outputs = { self }: {
-    templates.python = {
-      path = ./templates/python;
-      description = "Python template with Nix + uv + pytest";
-      welcomeText = ''
-        # nixplates Python template
+  outputs = { self }:
+    let
+      python = {
+        path = ./templates/python;
+        description = "Packaged Python CLI app template with Nix + uv + pytest";
+        welcomeText = ''
+          Quick start:
+            direnv allow
+            # or: nix develop
 
-        Quick start:
-          direnv allow
-          # or: nix develop
-
-        Then run:
-          uv sync --frozen
-          uv run python -m pytest
-          uv run python main.py
-      '';
+          Then run:
+            uv sync --frozen
+            uv run python -m pytest
+            uv run example-pkg
+        '';
+      };
+    in
+    {
+      templates = {
+        inherit python;
+        default = python;
+      };
     };
-
-    templates.default = self.templates.python;
-  };
 }

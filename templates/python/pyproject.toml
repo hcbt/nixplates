@@ -3,15 +3,18 @@ requires = ["hatchling>=1.27.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "python"
+name = "example-pkg"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = []
 
+[project.scripts]
+example-pkg = "example_pkg:main"
+
 [dependency-groups]
 dev = ["pytest>=8.4.2"]
 
-[tool.uv]
-package = false
+[tool.hatch.build.targets.wheel]
+packages = ["src/example_pkg"]

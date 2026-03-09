@@ -1,6 +1,6 @@
 # Python Template
 
-Minimal Python project template using Nix flakes and `uv`.
+Packaged Python CLI app template using Nix flakes and `uv`.
 
 ## Prerequisites
 
@@ -30,5 +30,5 @@ uv run python -m pytest
 ## Run the App
 
 ```bash
-uv run python main.py
+uv run example-pkg
 ```
