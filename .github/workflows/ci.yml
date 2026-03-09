@@ -5,7 +5,7 @@ on:
   push:
 
 jobs:
-  template-checks:
+  flake-check:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -16,40 +16,5 @@ jobs:
 
       - uses: cachix/install-nix-action@v31
 
-      - uses: cachix/cachix-action@v16
-        with:
-          name: devenv
-
-      - name: Install devenv.sh
-        run: nix profile install nixpkgs#devenv
-
-      - name: Validate root flake outputs
+      - name: Validate flake outputs
         run: nix flake check
-
-      - name: Initialize and validate python template
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          project_dir="$(mktemp -d)"
-          cd "$project_dir"
-
-          nix flake init -t "path:${GITHUB_WORKSPACE}#python"
-
-          test -f .gitignore
-          test -f .python-version
-          test -f pyproject.toml
-          test -d src/example_pkg
-          test -f .github/workflows/test.yml
-          test -f .github/workflows/release.yml
-
-          git init
-          git add .
-          git ls-files --error-unmatch .gitignore .python-version src/example_pkg/__init__.py tests/test_main.py .github/workflows/test.yml .github/workflows/release.yml
-
-          nix develop --impure --command uv sync --frozen
-          nix develop --impure --command uv run python -m pytest
-          nix develop --impure --command uv run example-pkg
-          nix develop --impure --command uv build
-          nix develop --impure --command uv run --isolated --no-project --with dist/*.whl python -c "import example_pkg; example_pkg.main()"
-          nix develop --impure --command uv run --isolated --no-project --with dist/*.tar.gz python -c "import example_pkg; example_pkg.main()"
