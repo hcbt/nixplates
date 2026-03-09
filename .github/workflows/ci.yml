@@ -37,15 +37,19 @@ jobs:
           nix flake init -t "path:${GITHUB_WORKSPACE}#python"
 
           test -f .gitignore
-          test -f .envrc
           test -f .python-version
           test -f pyproject.toml
           test -d src/example_pkg
+          test -f .github/workflows/test.yml
+          test -f .github/workflows/release.yml
 
           git init
           git add .
-          git ls-files --error-unmatch .gitignore .envrc .python-version src/example_pkg/__init__.py tests/test_main.py
+          git ls-files --error-unmatch .gitignore .python-version src/example_pkg/__init__.py tests/test_main.py .github/workflows/test.yml .github/workflows/release.yml
 
           nix develop --impure --command uv sync --frozen
           nix develop --impure --command uv run python -m pytest
           nix develop --impure --command uv run example-pkg
+          nix develop --impure --command uv build
+          nix develop --impure --command uv run --isolated --no-project --with dist/*.whl python -c "import example_pkg; example_pkg.main()"
+          nix develop --impure --command uv run --isolated --no-project --with dist/*.tar.gz python -c "import example_pkg; example_pkg.main()"

@@ -6,5 +6,4 @@ result-*
 
 # Always keep template control files trackable.
 !templates/**/.gitignore
-!templates/**/.envrc
 !templates/**/.python-version

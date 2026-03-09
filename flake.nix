@@ -8,8 +8,7 @@
         description = "Packaged Python CLI app template with Nix + uv + pytest";
         welcomeText = ''
           Quick start:
-            direnv allow
-            # or: nix develop
+            nix develop
 
           Then run:
             uv sync --frozen
