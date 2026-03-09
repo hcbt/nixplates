@@ -26,17 +26,14 @@ jobs:
         with:
           name: devenv
 
-      - name: Install devenv.sh
-        run: nix profile install nixpkgs#devenv
-
       - name: Build distribution artifacts
-        run: devenv shell -- uv build
+        run: nix develop --impure --command uv build
 
       - name: Smoke test wheel
-        run: devenv shell -- uv run --isolated --no-project --with dist/*.whl python -c "import example_pkg; example_pkg.main()"
+        run: nix develop --impure --command uv run --isolated --no-project --with dist/*.whl python -c "import example_pkg; example_pkg.main()"
 
       - name: Smoke test source distribution
-        run: devenv shell -- uv run --isolated --no-project --with dist/*.tar.gz python -c "import example_pkg; example_pkg.main()"
+        run: nix develop --impure --command uv run --isolated --no-project --with dist/*.tar.gz python -c "import example_pkg; example_pkg.main()"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
