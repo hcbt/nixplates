@@ -95,7 +95,7 @@
             default = devenv.lib.mkShell {
               inherit inputs pkgs;
               modules = [
-                {
+                ({ config, lib, ... }: {
                   languages.python.enable = true;
                   languages.python.package = pkgs.python314;
                   languages.python.uv.enable = true;
@@ -103,7 +103,41 @@
 
                   git-hooks.package = pkgs.prek;
                   git-hooks.hooks = pythonGitHooks;
-                }
+                  tasks."devenv:git-hooks:install".exec = lib.mkForce ''
+                    if ! ${lib.getExe config.git-hooks.gitPackage} rev-parse --git-dir &> /dev/null; then
+                      echo 1>&2 "WARNING: git-hooks.nix: .git not found; skipping hook installation."
+                      exit 0
+                    fi
+
+                    git_toplevel="$(${lib.getExe config.git-hooks.gitPackage} rev-parse --show-toplevel)"
+                    if [ "$PWD" != "$git_toplevel" ]; then
+                      echo "git-hooks.nix: skipping hook installation outside git toplevel ($git_toplevel)"
+                      exit 0
+                    fi
+
+                    # Work around repo-level hook collisions: only install when at repo top-level.
+                    if [ "$(${lib.getExe config.git-hooks.gitPackage} config --get core.hooksPath 2>/dev/null)" = ".git/hooks" ]; then
+                      ${lib.getExe config.git-hooks.gitPackage} config --unset core.hooksPath
+                    fi
+
+                    if [ -z "${lib.concatStringsSep " " config.git-hooks.installStages}" ]; then
+                      ${lib.getExe config.git-hooks.package} install -c ${config.git-hooks.configPath}
+                    else
+                      for stage in ${lib.concatStringsSep " " config.git-hooks.installStages}; do
+                        case "$stage" in
+                          manual)
+                            ;;
+                          commit|merge-commit|push)
+                            ${lib.getExe config.git-hooks.package} install -c ${config.git-hooks.configPath} -t "pre-$stage"
+                            ;;
+                          *)
+                            ${lib.getExe config.git-hooks.package} install -c ${config.git-hooks.configPath} -t "$stage"
+                            ;;
+                        esac
+                      done
+                    fi
+                  '';
+                })
               ];
             };
           });
