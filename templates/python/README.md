@@ -30,6 +30,38 @@ uv run python -m pytest
 uv run example-pkg
 ```
 
+## Nix Flake Outputs
+
+Run as a flake app:
+
+```bash
+nix run
+# or
+nix run .#example-pkg
+```
+
+Install into a profile:
+
+```bash
+nix profile install .#example-pkg
+```
+
+Use from another flake input:
+
+```nix
+{
+  inputs.example-pkg.url = "path:./path/to/this/template";
+
+  outputs = { self, nixpkgs, example-pkg, ... }:
+    let
+      system = "x86_64-linux";
+    in
+    {
+      packages.${system}.default = example-pkg.packages.${system}.default;
+    };
+}
+```
+
 ## Renaming the Placeholder App
 
 `nix flake init` copies static template files. It does not support interactive variables (for example, app name) during initialization.
