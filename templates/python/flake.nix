@@ -95,7 +95,7 @@
             default = devenv.lib.mkShell {
               inherit inputs pkgs;
               modules = [
-                ({ lib, ... }: {
+                ({ ... }: {
                   languages.python.enable = true;
                   languages.python.package = pkgs.python314;
                   languages.python.uv.enable = true;
@@ -104,12 +104,8 @@
                   git-hooks.package = pkgs.prek;
                   git-hooks.hooks = pythonGitHooks;
                   git-hooks.install.enable = false;
+                  tasks."devenv:git-hooks:install".status = "exit 0";
 
-                  # devenv's git-hooks integration still installs hooks by default.
-                  # Keep hook definitions/config, but require explicit `prek install`.
-                  tasks."devenv:git-hooks:install".exec = lib.mkForce ''
-                    echo "git-hooks.nix: automatic installation disabled; run 'prek install --hook-type pre-commit --hook-type pre-push'"
-                  '';
                 })
               ];
             };
