@@ -15,7 +15,6 @@ example-pkg = "example_pkg:main"
 
 [dependency-groups]
 dev = [
-    "pre-commit>=4.0.0",
     "pytest>=8.4.2",
 ]
 
