@@ -35,6 +35,12 @@ For the Python template, rename placeholders manually right after init:
 1. Update `[project].name` and `[project.scripts]` in `pyproject.toml`.
 2. Rename `src/example_pkg` to your package module name.
 3. Update imports/tests and your run command accordingly.
+4. Update commands in template workflows if they reference placeholder names.
+
+## CI Scope
+
+Root CI in this repository validates only the root flake catalog (`nix flake check`).  
+Template runtime/build validation lives in each template's own workflows after initialization.
 
 ## Adding a New Template
 

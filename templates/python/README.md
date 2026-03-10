@@ -43,7 +43,7 @@ nix run .#example-pkg
 Install into a profile:
 
 ```bash
-nix profile install .#example-pkg
+nix profile add .#example-pkg
 ```
 
 Use from another flake input:
@@ -71,3 +71,4 @@ After initialization, rename placeholders manually:
 1. Update `[project].name` and `[project.scripts]` in `pyproject.toml`.
 2. Rename `src/example_pkg` to your package module name.
 3. Update imports in tests and any run commands that reference `example-pkg` or `example_pkg`.
+4. Update workflow commands in `.github/workflows/test.yml` and `.github/workflows/release.yml` if they still reference `example-pkg` or `example_pkg`.

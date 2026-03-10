@@ -43,6 +43,16 @@
             example-pkg = pythonPackage;
           });
 
+      checks = forEachSystem
+        (system:
+          let
+            package = self.packages.${system}.default;
+          in
+          {
+            default = package;
+            example-pkg = package;
+          });
+
       apps = forEachSystem
         (system:
           let
