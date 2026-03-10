@@ -18,6 +18,12 @@ nix develop
 uv sync --frozen
 ```
 
+## Run Pre-commit Hooks
+
+```bash
+uv run pre-commit run --all-files
+```
+
 ## Run Tests
 
 ```bash

@@ -28,5 +28,6 @@ jobs:
       - name: Sync, test, and run app
         run: |
           nix develop --impure --command uv sync --frozen
+          nix develop --impure --command uv run pre-commit run --all-files
           nix develop --impure --command uv run python -m pytest
           nix develop --impure --command uv run example-pkg

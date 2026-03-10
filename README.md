@@ -39,7 +39,7 @@ For the Python template, rename placeholders manually right after init:
 
 ## CI Scope
 
-Root CI in this repository validates only the root flake catalog (`nix flake check`).  
+Root CI in this repository validates only the root flake catalog (`nix flake check`).
 Template runtime/build validation lives in each template's own workflows after initialization.
 
 ## Adding a New Template

@@ -219,6 +219,3 @@ __marimo__/
 devenv.local.nix
 devenv.local.yaml
 .direnv/
-
-# pre-commit
-.pre-commit-config.yaml
