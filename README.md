@@ -11,19 +11,19 @@ Reusable Nix flake templates. The root `flake.nix` is the catalog entrypoint.
 Initialize using the default template:
 
 ```bash
-nix flake init -t github:<org>/nixplates
+nix flake init -t github:hcbt/nixplates
 ```
 
 Initialize using the Python template explicitly:
 
 ```bash
-nix flake init -t github:<org>/nixplates#python
+nix flake init -t github:hcbt/nixplates#python
 ```
 
 For local development and CI validation from this repository:
 
 ```bash
-nix flake init -t "path:${PWD}#python"
+nix flake init -t "path:./#python"
 ```
 
 ## Template Variables
