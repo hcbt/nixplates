@@ -1,0 +1,43 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: cachix/install-nix-action@v31
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+
+      - name: Run unit tests
+        run: nix develop --impure --command go test ./...
+
+      - name: Run app smoke test
+        run: nix develop --impure --command go run ./cmd/example-go
+
+      - name: Run hooks
+        run: nix develop --impure --command prek run --all-files
+
+      - name: Run flake checks
+        run: nix flake check --impure
+
+      - name: Validate package build
+        run: nix build .#example-go

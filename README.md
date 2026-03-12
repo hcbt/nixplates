@@ -4,6 +4,7 @@ Reusable Nix flake templates. The root `flake.nix` is the catalog entrypoint.
 
 ## Available Templates
 
+- `go`: Production-style Go CLI app template (`example-go`) with Nix, GoReleaser, and `prek`.
 - `python`: Packaged Python CLI app template (`example_pkg`) with `nix develop`, `uv`, and `pytest`.
 
 ## Usage
@@ -20,10 +21,17 @@ Initialize using the Python template explicitly:
 nix flake init -t github:hcbt/nixplates#python
 ```
 
+Initialize using the Go template explicitly:
+
+```bash
+nix flake init -t github:hcbt/nixplates#go
+```
+
 For local development and CI validation from this repository:
 
 ```bash
 nix flake init -t "path:./#python"
+nix flake init -t "path:./#go"
 ```
 
 ## Template Variables
@@ -36,6 +44,13 @@ For the Python template, rename placeholders manually right after init:
 2. Rename `src/example_pkg` to your package module name.
 3. Update imports/tests and your run command accordingly.
 4. Update commands in template workflows if they reference placeholder names.
+
+For the Go template, rename placeholders manually right after init:
+
+1. Update module path in `go.mod`.
+2. Rename `cmd/example-go` if you want a different binary name.
+3. Update import paths under `internal/` and tests.
+4. Update `.goreleaser.release.yml` and `.goreleaser.publish.yml` placeholders.
 
 ## CI Scope
 

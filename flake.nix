@@ -3,6 +3,18 @@
 
   outputs = { self }:
     let
+      go = {
+        path = ./templates/go;
+        description = "Production-style Go CLI app template with Nix + GoReleaser + prek";
+        welcomeText = ''
+          Quick start:
+            nix develop
+
+          Then run:
+            go test ./...
+            go run ./cmd/example-go
+        '';
+      };
       python = {
         path = ./templates/python;
         description = "Packaged Python CLI app template with Nix + uv + pytest";
@@ -19,6 +31,7 @@
     in
     {
       templates = {
+        inherit go;
         inherit python;
         default = python;
       };

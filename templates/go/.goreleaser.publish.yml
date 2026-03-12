@@ -1,0 +1,66 @@
+version: 2
+
+project_name: example-go
+
+release:
+  disable: true
+
+builds:
+  - id: example-go
+    binary: example-go
+    main: ./cmd/example-go
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X github.com/hcbt/example-go/internal/version.Version={{ .Version }}
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: checksums.txt
+
+dockers:
+  - id: example-go-amd64
+    ids:
+      - example-go
+    goos: linux
+    goarch: amd64
+    image_templates:
+      - ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/example-go:{{ .Tag }}-amd64
+      - ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/example-go:latest-amd64
+    use: buildx
+    dockerfile: Dockerfile
+
+  - id: example-go-arm64
+    ids:
+      - example-go
+    goos: linux
+    goarch: arm64
+    image_templates:
+      - ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/example-go:{{ .Tag }}-arm64
+      - ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/example-go:latest-arm64
+    use: buildx
+    dockerfile: Dockerfile
+
+docker_manifests:
+  - name_template: ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/example-go:{{ .Tag }}
+    image_templates:
+      - ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/example-go:{{ .Tag }}-amd64
+      - ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/example-go:{{ .Tag }}-arm64
+
+  - name_template: ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/example-go:latest
+    image_templates:
+      - ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/example-go:latest-amd64
+      - ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/example-go:latest-arm64
