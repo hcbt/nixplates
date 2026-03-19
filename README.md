@@ -5,6 +5,7 @@ Reusable Nix flake templates. The root `flake.nix` is the catalog entrypoint.
 ## Available Templates
 
 - `go`: Production-style Go CLI app template (`example-go`) with Nix, GoReleaser, and `prek`.
+- `nextjs`: Full-stack Next.js canary web app template (`example-nextjs`) with Nix, Drizzle/PostgreSQL, and Playwright.
 - `python`: Packaged Python CLI app template (`example_pkg`) with `nix develop`, `uv`, and `pytest`.
 
 ## Usage
@@ -27,11 +28,18 @@ Initialize using the Go template explicitly:
 nix flake init -t github:hcbt/nixplates#go
 ```
 
+Initialize using the Next.js template explicitly:
+
+```bash
+nix flake init -t github:hcbt/nixplates#nextjs
+```
+
 For local development and CI validation from this repository:
 
 ```bash
 nix flake init -t "path:./#python"
 nix flake init -t "path:./#go"
+nix flake init -t "path:./#nextjs"
 ```
 
 ## Template Variables

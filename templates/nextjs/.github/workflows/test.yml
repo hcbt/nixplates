@@ -1,0 +1,52 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: cachix/install-nix-action@v31
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+
+      - name: Install dependencies
+        run: nix develop --impure --command pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: nix develop --impure --command pnpm exec playwright install chromium
+
+      - name: Run hooks
+        run: nix develop --impure --command prek run --all-files
+
+      - name: Run unit tests
+        run: nix develop --impure --command pnpm test
+
+      - name: Run end-to-end tests
+        run: nix develop --impure --command pnpm test:e2e
+
+      - name: Build app
+        run: nix develop --impure --command pnpm build
+
+      - name: Run flake checks
+        run: nix flake check --impure
+
+      - name: Validate package build
+        run: nix build .#example-nextjs

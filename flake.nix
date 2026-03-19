@@ -28,11 +28,25 @@
             uv run example-pkg
         '';
       };
+      nextjs = {
+        path = ./templates/nextjs;
+        description = "Full-stack Next.js canary web app template with Nix + Drizzle + Playwright";
+        welcomeText = ''
+          Quick start:
+            nix develop
+
+          Then run:
+            pnpm install --frozen-lockfile
+            devenv up -d
+            pnpm dev
+        '';
+      };
     in
     {
       templates = {
         inherit go;
         inherit python;
+        inherit nextjs;
         default = python;
       };
     };
